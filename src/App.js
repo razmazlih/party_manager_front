@@ -1,25 +1,42 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import EventList from './components/EventList';
+import EventDetail from './components/EventDetail';
+import Login from './components/Login';
+import Register from './components/Register';
+import ReservationList from './components/ReservationList';
+import OrganizerDashboard from './components/OrganizerDashboard';
+import NotificationList from './components/NotificationList';
+import './components/styles.css';  // Importing the styles
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const userId = localStorage.getItem('userId');
+
+    return (
+        <Router>
+            <div>
+                <Navbar />
+                <div className="container">
+                    <Routes>
+                        <Route path="/" element={<EventList />} />
+                        <Route path="/events/:id" element={<EventDetail />} />
+                        <Route 
+                            path="/login" 
+                            element={!userId ? <Login /> : <Navigate to="/" />} 
+                        />
+                        <Route 
+                            path="/register" 
+                            element={!userId ? <Register /> : <Navigate to="/" />} 
+                        />
+                        <Route path="/my-reservations" element={<ReservationList />} />
+                        <Route path="/organizer-dashboard" element={<OrganizerDashboard />} />
+                        <Route path="/notifications" element={<NotificationList />} />
+                    </Routes>
+                </div>
+            </div>
+        </Router>
+    );
 }
 
 export default App;
