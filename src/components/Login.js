@@ -1,21 +1,32 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode'; // ייבוא של jwtDecode
 import { loginUser, setAuthToken } from '../services/api';
 import './styles.css';
 
 const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const navigate = useNavigate();
 
     const handleLogin = () => {
-        loginUser({ username, password }).then((response) => {
-            const { access, user_id } = response.data;  // נניח שה-API מחזיר גם את ה-user_id
-            setAuthToken(access);
-            localStorage.setItem('userId', user_id);  // שמירת userId ב-localStorage
-            alert('Logged in successfully!');
-        }).catch((error) => {
-            console.error('Login error:', error);
-            alert('Login failed. Please check your credentials.');
-        });
+        loginUser({ username, password })
+            .then((response) => {
+                const { access } = response.data; // קבלת ה-access token
+                
+                // פענוח ה-access token כדי לקבל את ה-user_id
+                const decodedToken = jwtDecode(access);
+                const user_id = decodedToken.user_id;
+                
+                setAuthToken(access);
+                localStorage.setItem('userId', user_id);
+                
+                navigate('/'); // חזרה לדף הבית
+            })
+            .catch((error) => {
+                console.error('Login error:', error);
+                alert('Login failed. Please check your credentials.');
+            });
     };
 
     return (

@@ -1,20 +1,43 @@
 import React, { useState } from 'react';
-import { registerUser } from '../services/api';
+import { useNavigate } from 'react-router-dom'; 
+import { jwtDecode } from 'jwt-decode'; // ייבוא של jwtDecode
+import { registerUser, loginUser, setAuthToken } from '../services/api'; 
 
 const Register = () => {
     const [userData, setUserData] = useState({
+        role: 'regular',
         username: '',
         email: '',
         password: '',
     });
 
+    const navigate = useNavigate();
+
     const handleRegister = () => {
-        registerUser(userData).then(() => {
-            alert('User registered successfully!');
-        }).catch((error) => {
-            console.error('Registration error:', error);
-            alert('Registration failed. Please try again.');
-        });
+        registerUser(userData)
+            .then(() => {
+                // לאחר רישום מוצלח, מבצעים התחברות
+                loginUser({ username: userData.username, password: userData.password })
+                    .then((response) => {
+                        const { access } = response.data; // קבלת ה-access token
+                        setAuthToken(access);
+                        
+                        // פענוח ה-access token כדי לקבל את ה-user_id
+                        const decodedToken = jwtDecode(access);
+                        const user_id = decodedToken.user_id;
+
+                        localStorage.setItem('userId', user_id);
+                        navigate('/'); // חזרה לדף הבית
+                    })
+                    .catch((error) => {
+                        console.error('Login error:', error);
+                        alert('Registration successful, but login failed. Please log in manually.');
+                    });
+            })
+            .catch((error) => {
+                console.error('Registration error:', error);
+                alert('Registration failed. Please try again.');
+            });
     };
 
     return (

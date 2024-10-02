@@ -1,6 +1,16 @@
 import axios from 'axios';
 
-const API_URL = 'http://127.0.0.1:8000/api/';
+const API_URL = 'http://10.0.0.27:8000/api/';
+
+
+export const fetchUserReservations = (userId) => {
+    const token = localStorage.getItem('authToken');
+    return axios.get(`${API_URL}reservations/`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+};
 
 const api = axios.create({
     baseURL: API_URL,
@@ -12,7 +22,6 @@ export const loginUser = (credentials) => api.post('token/', credentials);
 export const fetchEvents = () => api.get('events/');
 export const fetchEventDetail = (eventId) => api.get(`events/${eventId}/`);
 export const createReservation = (reservationData) => api.post('reservations/', reservationData);
-export const fetchUserReservations = (userId) => api.get(`reservations/?user=${userId}`);
 export const fetchNotifications = (userId) => api.get(`notifications/?user=${userId}`);
 export const createComment = (commentData) => api.post('comments/', commentData);
 
