@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { setAuthToken } from '../services/api';
 import './styles.css';  // Importing the styles
 
 const Navbar = () => {
@@ -7,9 +8,11 @@ const Navbar = () => {
     const userId = localStorage.getItem('userId');
 
     const handleLogout = () => {
-        localStorage.removeItem('userId');
         localStorage.removeItem('authToken');
-        navigate('/login');
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('userId');
+        setAuthToken(null); // הסרת האימות
+        navigate('/login'); // ניתוב לדף ההתחברות
     };
 
     return (

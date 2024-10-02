@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode'; // ייבוא של jwtDecode
+import { jwtDecode } from 'jwt-decode'; // תיקון הייבוא
 import { loginUser, setAuthToken } from '../services/api';
 import './styles.css';
 
@@ -12,13 +12,15 @@ const Login = () => {
     const handleLogin = () => {
         loginUser({ username, password })
             .then((response) => {
-                const { access } = response.data; // קבלת ה-access token
+                const { access, refresh } = response.data; // קבלת ה-access ו-refresh tokens
                 
                 // פענוח ה-access token כדי לקבל את ה-user_id
                 const decodedToken = jwtDecode(access);
                 const user_id = decodedToken.user_id;
                 
                 setAuthToken(access);
+                localStorage.setItem('authToken', access); // שמירת ה-access token
+                localStorage.setItem('refreshToken', refresh); // שמירת ה-refresh token
                 localStorage.setItem('userId', user_id);
                 
                 navigate('/'); // חזרה לדף הבית
