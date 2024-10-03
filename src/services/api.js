@@ -29,8 +29,15 @@ export const createReservation = (reservationData) => {
     });
 };
 export const fetchNotifications = (userId) => api.get(`notifications/?user=${userId}`);
-export const createComment = (commentData) => api.post('comments/', commentData);
 
+export const createComment = (commentData) => {
+    const token = localStorage.getItem('authToken');
+    return axios.post(`${API_URL}comments/`, commentData, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+};
 // פונקציה לביטול הזמנה
 export const cancelReservation = (reservationId) => {
     const token = localStorage.getItem('authToken');
@@ -58,6 +65,10 @@ export const setAuthToken = (token) => {
     } else {
         delete api.defaults.headers.common['Authorization'];
     }
+};
+
+export const fetchComments = (eventId) => {
+    return api.get(`comments/?event=${eventId}`);
 };
 
 export default api;

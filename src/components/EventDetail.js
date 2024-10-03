@@ -1,16 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { fetchEventDetail, createReservation } from '../services/api';
+import { fetchEventDetail, createReservation, fetchComments, createComment } from '../services/api';
+import './styles.css'; // ייבוא קובץ ה-CSS
 
 const EventDetail = () => {
     const { id } = useParams();
     const [event, setEvent] = useState(null);
     const [seats, setSeats] = useState(1);
-    const userId = localStorage.getItem('userId'); // קבלת userId מה-localStorage
+    const [comments, setComments] = useState([]);
+    const [commentText, setCommentText] = useState('');
+    const userId = localStorage.getItem('userId');
 
     useEffect(() => {
         fetchEventDetail(id).then((response) => {
             setEvent(response.data);
+        });
+
+        fetchComments(id).then((response) => {
+            setComments(response.data);
         });
     }, [id]);
 
@@ -21,16 +28,45 @@ const EventDetail = () => {
         }
 
         const reservationData = {
-            user: userId,  // הוספת userId להזמנה
+            user: userId,
             event: event.id,
             seats_reserved: seats,
         };
 
-        createReservation(reservationData).then((response) => {
+        createReservation(reservationData).then(() => {
             alert('Reservation created successfully!');
         }).catch((error) => {
             console.error('Error creating reservation:', error);
             alert('Failed to create reservation. Please check the input.');
+        });
+    };
+
+    const handleAddComment = () => {
+        if (!userId) {
+            alert('Please log in to add a comment.');
+            return;
+        }
+    
+        // בדיקה אם המשתמש כבר הוסיף תגובה
+        if (comments.some(comment => comment.user === userId)) {
+            alert('You have already added a comment for this event.');
+            return;
+        }
+    
+        const commentData = {
+            event: id,
+            content: commentText,
+            user: userId
+        };
+    
+        createComment(commentData).then(() => {
+            alert('Comment added successfully!');
+            fetchComments(id).then((response) => {
+                setComments(response.data);
+            });
+        }).catch((error) => {
+            console.error('Error adding comment:', error);
+            alert('Failed to add comment.');
         });
     };
 
@@ -57,6 +93,33 @@ const EventDetail = () => {
                 </label>
                 <button onClick={handleReservation}>Reserve</button>
             </div>
+            
+            {/* הצגת התגובות */}
+            <div className="comments-section">
+                <h2>Comments</h2>
+                {comments.length > 0 ? (
+                    comments.map((comment) => (
+                        <div key={comment.id} className="comment">
+                            <p><strong>{comment.user}:</strong> {comment.content}</p>
+                        </div>
+                    ))
+                ) : (
+                    <p>No comments yet.</p>
+                )}
+            </div>
+
+            {/* הוספת תגובה - יוצג רק אם המשתמש לא הוסיף תגובה */}
+            {!comments.some(comment => comment.user == userId) && (
+                <div className="add-comment-section">
+                    <h2>Add a Comment</h2>
+                    <textarea
+                        value={commentText}
+                        onChange={(e) => setCommentText(e.target.value)}
+                        placeholder="Write your comment here"
+                    ></textarea>
+                    <button onClick={handleAddComment}>Add Comment</button>
+                </div>
+            )}
         </div>
     );
 };
