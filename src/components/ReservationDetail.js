@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { fetchReservationDetail } from '../services/api'; // ייבוא הפונקציה מה-API
+import { fetchReservationDetail, cancelReservation } from '../services/api'; // ייבוא הפונקציה מה-API
 import { useParams } from 'react-router-dom';
+
 
 const ReservationDetail = () => {
     const { reservationId } = useParams(); // קבלת ה-ID של ההזמנה מה-URL
@@ -20,6 +21,20 @@ const ReservationDetail = () => {
         return <p>Loading reservation details...</p>;
     }
 
+    const handleCancel = (reservationId) => {
+        cancelReservation(reservationId)
+            .then(() => {
+                // עדכון הסטטוס של ההזמנה ל"cancelled" ב-state של ההזמנה הנוכחית
+                setReservation(prevReservation => ({
+                    ...prevReservation,
+                    status: 'cancelled'
+                }));
+            })
+            .catch((error) => {
+                console.error('Error cancelling reservation:', error);
+            });
+    };
+
     return (
         <div className="reservation-detail-container">
             <h1>{reservation.event_name}</h1>
@@ -27,6 +42,9 @@ const ReservationDetail = () => {
             <p><strong>Date:</strong> {reservation.event_date}</p>
             <p><strong>Seats Reserved:</strong> {reservation.seats_reserved}</p>
             <p><strong>Reservation Date:</strong> {reservation.reservation_date}</p>
+            {reservation.status === 'pending' && (
+                <button onClick={() => handleCancel(reservation.id)}>Cancel Reservation</button>
+            )}
         </div>
     );
 };

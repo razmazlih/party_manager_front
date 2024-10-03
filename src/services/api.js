@@ -20,7 +20,14 @@ export const registerUser = (userData) => api.post('register/', userData);
 export const loginUser = (credentials) => api.post('token/', credentials);
 export const fetchEvents = () => api.get('events/');
 export const fetchEventDetail = (eventId) => api.get(`events/${eventId}/`);
-export const createReservation = (reservationData) => api.post('reservations/', reservationData);
+export const createReservation = (reservationData) => {
+    const token = localStorage.getItem('authToken');
+    return axios.post(`${API_URL}reservations/`, reservationData, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+};
 export const fetchNotifications = (userId) => api.get(`notifications/?user=${userId}`);
 export const createComment = (commentData) => api.post('comments/', commentData);
 

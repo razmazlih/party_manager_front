@@ -13,6 +13,7 @@ const Navbar = () => {
         localStorage.removeItem('userId');
         setAuthToken(null); // הסרת האימות
         navigate('/login'); // ניתוב לדף ההתחברות
+        window.location.reload(); // רענון הדף
     };
 
     return (
