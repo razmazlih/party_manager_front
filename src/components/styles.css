@@ -84,6 +84,7 @@ label {
 }
 
 .comment {
+    position: relative; /* מאפשר מיקום מוחלט של הכפתור בתוכו */
     padding: 10px;
     margin-bottom: 15px;
     background-color: #fff;
@@ -119,4 +120,21 @@ textarea {
 textarea:focus {
     outline: none;
     border-color: #007bff;
+}
+
+.delete-button {
+    position: absolute; /* מיקום מוחלט */
+    right: 10px; /* מרחק מהצד הימני של התגובה */
+    top: 5px; /* מרחק מהחלק העליון של התגובה */
+    background-color: #ff4d4f;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 0.9em;
+}
+
+.delete-button:hover {
+    background-color: #d9363e;
 }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { fetchEventDetail, createReservation, fetchComments, createComment } from '../services/api';
-import './styles.css'; // ייבוא קובץ ה-CSS
+import { fetchEventDetail, createReservation, fetchComments, createComment, deleteComment } from '../services/api'; // ייבוא של deleteComment
+import './styles.css';
 
 const EventDetail = () => {
     const { id } = useParams();
@@ -47,7 +47,6 @@ const EventDetail = () => {
             return;
         }
     
-        // בדיקה אם המשתמש כבר הוסיף תגובה
         if (comments.some(comment => comment.user === userId)) {
             alert('You have already added a comment for this event.');
             return;
@@ -67,6 +66,18 @@ const EventDetail = () => {
         }).catch((error) => {
             console.error('Error adding comment:', error);
             alert('Failed to add comment.');
+        });
+    };
+
+    const handleDeleteComment = (commentId) => {
+        deleteComment(commentId).then(() => {
+            alert('Comment deleted successfully!');
+            fetchComments(id).then((response) => {
+                setComments(response.data);
+            });
+        }).catch((error) => {
+            console.error('Error deleting comment:', error);
+            alert('Failed to delete comment.');
         });
     };
 
@@ -101,6 +112,14 @@ const EventDetail = () => {
                     comments.map((comment) => (
                         <div key={comment.id} className="comment">
                             <p><strong>{comment.username}:</strong> {comment.content}</p>
+                            {comment.user === parseInt(userId) && (
+                                <button 
+                                    onClick={() => handleDeleteComment(comment.id)} 
+                                    className="delete-button"
+                                >
+                                    Delete
+                                </button>
+                            )}
                         </div>
                     ))
                 ) : (
@@ -109,7 +128,7 @@ const EventDetail = () => {
             </div>
 
             {/* הוספת תגובה - יוצג רק אם המשתמש לא הוסיף תגובה */}
-            {!comments.some(comment => comment.user == userId) && (
+            {!comments.some(comment => comment.user === parseInt(userId)) && (
                 <div className="add-comment-section">
                     <h2>Add a Comment</h2>
                     <textarea

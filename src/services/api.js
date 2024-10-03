@@ -71,4 +71,13 @@ export const fetchComments = (eventId) => {
     return api.get(`comments/?event=${eventId}`);
 };
 
+export const deleteComment = (commentId) => {
+    const token = localStorage.getItem('authToken');
+    return axios.delete(`${API_URL}comments/${commentId}/`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+};
+
 export default api;
