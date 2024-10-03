@@ -8,7 +8,9 @@ const EventList = () => {
 
     useEffect(() => {
         fetchEvents().then((response) => {
-            setEvents(response.data);
+            const currentDate = new Date();
+            const futureEvents = response.data.filter(event => new Date(event.date) > currentDate);
+            setEvents(futureEvents);
         });
     }, []);
 
