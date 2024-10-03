@@ -100,7 +100,7 @@ const EventDetail = () => {
                 {comments.length > 0 ? (
                     comments.map((comment) => (
                         <div key={comment.id} className="comment">
-                            <p><strong>{comment.user}:</strong> {comment.content}</p>
+                            <p><strong>{comment.username}:</strong> {comment.content}</p>
                         </div>
                     ))
                 ) : (
