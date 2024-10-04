@@ -84,4 +84,13 @@ export const fetchComments = (eventId) => {
     return api.get(`comments/?event=${eventId}`);
 };
 
+export const fetchUserRole = () => {
+    const token = localStorage.getItem('authToken');
+    return axios.get(`${API_URL}user/role/`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+};
+
 export default api;
