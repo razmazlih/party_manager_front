@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { fetchUserRole, createEvent, fetchOrganizerEvents } from '../services/api';
+import { fetchUserRole, createEvent, fetchOrganizerEvents, fetchPendingReservations, approveReservation, rejectReservation } from '../services/api';
 import './OrganizerDashboard.css';
 import './styles.css';
 
@@ -13,6 +13,9 @@ const OrganizerDashboard = () => {
     const [eventPrice, setEventPrice] = useState('');
     const [eventPlaces, setEventPlaces] = useState('');
     const [events, setEvents] = useState([]);
+    const [showPopup, setShowPopup] = useState(false);
+    const [pendingReservations, setPendingReservations] = useState([]);
+    const [selectedEventId, setSelectedEventId] = useState(null);
 
     useEffect(() => {
         fetchUserRole().then((response) => {
@@ -52,6 +55,32 @@ const OrganizerDashboard = () => {
         }).catch((error) => {
             console.error('Error creating event:', error);
             alert('Failed to create event.');
+        });
+    };
+
+    const handleEventClick = (eventId) => {
+        setSelectedEventId(eventId);
+        fetchPendingReservations(eventId).then((response) => {
+            setPendingReservations(response.data);
+            setShowPopup(true);
+        }).catch((error) => {
+            console.error('Error fetching reservations:', error);
+        });
+    };
+
+    const handleApprove = (reservationId) => {
+        approveReservation(reservationId).then(() => {
+            setPendingReservations(pendingReservations.filter(reservation => reservation.id !== reservationId));
+        }).catch((error) => {
+            console.error('Error approving reservation:', error);
+        });
+    };
+
+    const handleReject = (reservationId) => {
+        rejectReservation(reservationId).then(() => {
+            setPendingReservations(pendingReservations.filter(reservation => reservation.id !== reservationId));
+        }).catch((error) => {
+            console.error('Error rejecting reservation:', error);
         });
     };
 
@@ -124,8 +153,8 @@ const OrganizerDashboard = () => {
                 {events.length > 0 ? (
                     <ul>
                         {events.map((event) => (
-                            <li key={event.id}>
-                                <Link to={`/events/${event.id}`}>{event.name} - {new Date(event.date).toLocaleDateString()}</Link>
+                            <li key={event.id} onClick={() => handleEventClick(event.id)}>
+                                {event.name} - {new Date(event.date).toLocaleDateString()}
                             </li>
                         ))}
                     </ul>
@@ -133,6 +162,24 @@ const OrganizerDashboard = () => {
                     <p>No events found.</p>
                 )}
             </div>
+
+            {showPopup && (
+                <div className="popup">
+                    <div className="popup-content">
+                        <h2>Pending Reservations</h2>
+                        <ul>
+                            {pendingReservations.map((reservation) => (
+                                <li key={reservation.id}>
+                                    {reservation.user_name}
+                                    <button onClick={() => handleApprove(reservation.id)}>Approve</button>
+                                    <button onClick={() => handleReject(reservation.id)}>Reject</button>
+                                </li>
+                            ))}
+                        </ul>
+                        <button onClick={() => setShowPopup(false)}>Close</button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

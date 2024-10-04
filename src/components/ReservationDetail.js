@@ -39,9 +39,9 @@ const ReservationDetail = () => {
         <div className="reservation-detail-container">
             <h1>{reservation.event_name}</h1>
             <p><strong>Status:</strong> {reservation.status}</p>
-            <p><strong>Date:</strong> {reservation.event_date}</p>
+            <p><strong>Date:</strong> {new Date(reservation.event_date).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}</p>
             <p><strong>Seats Reserved:</strong> {reservation.seats_reserved}</p>
-            <p><strong>Reservation Date:</strong> {reservation.reservation_date}</p>
+            <p><strong>Reservation Date:</strong> {new Date(reservation.reservation_date).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}</p>
             {reservation.status === 'pending' && (
                 <button onClick={() => handleCancel(reservation.id)}>Cancel Reservation</button>
             )}

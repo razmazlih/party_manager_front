@@ -105,4 +105,22 @@ export const fetchOrganizerEvents = () => {
     return api.get('events/organizer/');
 };
 
+export const fetchPendingReservations = (eventId) => {
+    const token = localStorage.getItem('authToken');
+    setAuthToken(token);
+    return api.get(`events/${eventId}/pending_reservations/`);
+};
+
+export const approveReservation = (reservationId) => {
+    const token = localStorage.getItem('authToken');
+    setAuthToken(token);
+    return api.post(`reservations/${reservationId}/approve/`);
+};
+
+export const rejectReservation = (reservationId) => {
+    const token = localStorage.getItem('authToken');
+    setAuthToken(token);
+    return api.post(`reservations/${reservationId}/reject/`);
+};
+
 export default api;

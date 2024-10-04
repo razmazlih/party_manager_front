@@ -31,8 +31,7 @@ const ReservationList = () => {
                                 <h2>{reservation.event_name}</h2>
                             </Link>
                             <p><strong>Status:</strong> {reservation.status}</p>
-                            <p><strong>Date:</strong> {reservation.event_date}</p>
-                            <p><strong>Seats Reserved:</strong> {reservation.seats_reserved}</p>
+                            <p><strong>Date:</strong> {new Date(reservation.event_date).toLocaleDateString()}</p>                            <p><strong>Seats Reserved:</strong> {reservation.seats_reserved}</p>
                         </div>
                     ))}
                 </div>
