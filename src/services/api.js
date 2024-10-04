@@ -36,35 +36,50 @@ export const registerUser = (userData) => api.post('register/', userData);
 export const loginUser = (credentials) => api.post('token/', credentials);
 export const fetchEvents = () => api.get('events/');
 export const fetchEventDetail = (eventId) => api.get(`events/${eventId}/`);
+
 export const fetchUserReservations = (userId) => {
     return api.get(`reservations/?user=${userId}`);
 };
+
 export const createReservation = (reservationData) => {
     const token = localStorage.getItem('authToken');
     setAuthToken(token);
     return api.post('reservations/', reservationData);
 };
-export const fetchNotifications = (userId) => api.get(`notifications/?user=${userId}`);
+
+export const fetchNotifications = () => {
+    const token = localStorage.getItem('authToken');
+    return axios.get(`${API_URL}notifications/`, {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    });
+};
+
 export const createComment = (commentData) => {
     const token = localStorage.getItem('authToken');
     setAuthToken(token);
     return api.post('comments/', commentData);
 };
+
 export const deleteComment = (commentId) => {
     const token = localStorage.getItem('authToken');
     setAuthToken(token);
     return api.delete(`comments/${commentId}/`);
 };
+
 export const cancelReservation = (reservationId) => {
     const token = localStorage.getItem('authToken');
     setAuthToken(token);
     return api.post(`reservations/${reservationId}/cancel/`);
 };
+
 export const fetchReservationDetail = (reservationId) => {
     const token = localStorage.getItem('authToken');
     setAuthToken(token);
     return api.get(`reservations/${reservationId}/`);
 };
+
 export const fetchComments = (eventId) => {
     return api.get(`comments/?event=${eventId}`);
 };
