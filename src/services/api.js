@@ -93,4 +93,16 @@ export const fetchUserRole = () => {
     });
 };
 
+export const createEvent = (eventData) => {
+    const token = localStorage.getItem('authToken');
+    setAuthToken(token);
+    return api.post('events/', eventData);
+};
+
+export const fetchOrganizerEvents = () => {
+    const token = localStorage.getItem('authToken');
+    setAuthToken(token);
+    return api.get('events/organizer/');
+};
+
 export default api;
