@@ -129,8 +129,8 @@ const EventDetail = () => {
                 )}
             </div>
 
-            {/* הוספת תגובה - יוצג רק אם המשתמש לא הוסיף תגובה */}
-            {!comments.some(comment => comment.user === parseInt(userId)) && (
+            {/* הוספת תגובה - יוצג רק אם המשתמש מחובר ולא הוסיף תגובה */}
+            {userId && !comments.some(comment => comment.user === parseInt(userId)) && (
                 <div className="add-comment-section">
                     <h2>Add a Comment</h2>
                     <textarea
