@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { fetchEventDetail, createReservation, fetchComments, createComment, deleteComment } from '../services/api'; // ייבוא של deleteComment
+import { useParams, useNavigate } from 'react-router-dom';
+import { fetchEventDetail, createReservation, fetchComments, createComment, deleteComment } from '../services/api';
 import './styles.css';
 
 const EventDetail = () => {
     const { id } = useParams();
+    const navigate = useNavigate(); // הגדרת useNavigate
     const [event, setEvent] = useState(null);
     const [seats, setSeats] = useState(1);
     const [comments, setComments] = useState([]);
@@ -35,6 +36,7 @@ const EventDetail = () => {
 
         createReservation(reservationData).then(() => {
             alert('Reservation created successfully!');
+            navigate('/my-reservations');
         }).catch((error) => {
             console.error('Error creating reservation:', error);
             alert('Failed to create reservation. Please check the input.');
