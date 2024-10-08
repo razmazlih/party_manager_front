@@ -13,17 +13,21 @@ const Login = () => {
         loginUser({ username, password })
             .then((response) => {
                 const { access, refresh } = response.data; // קבלת ה-access ו-refresh tokens
-                
+    
                 // פענוח ה-access token כדי לקבל את ה-user_id
                 const decodedToken = jwtDecode(access);
                 const user_id = decodedToken.user_id;
-                
-                setAuthToken(access);
-                localStorage.setItem('authToken', access); // שמירת ה-access token
-                localStorage.setItem('refreshToken', refresh); // שמירת ה-refresh token
-                localStorage.setItem('userId', user_id);
-                
-                navigate('/'); // חזרה לדף הבית
+    
+                if (user_id) { // בדיקה אם user_id קיים
+                    setAuthToken(access);
+                    localStorage.setItem('authToken', access); // שמירת ה-access token
+                    localStorage.setItem('refreshToken', refresh); // שמירת ה-refresh token
+                    localStorage.setItem('userId', user_id);
+    
+                    navigate('/'); // חזרה לדף הבית
+                } else {
+                    alert('Login failed. Invalid token.');
+                }
             })
             .catch((error) => {
                 console.error('Login error:', error);
