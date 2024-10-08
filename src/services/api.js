@@ -1,6 +1,9 @@
 import axios from 'axios';
 
-const API_URL = 'http://127.0.0.1:8000/api/';
+// const API_URL = 'http://127.0.0.1:8000/api/';
+
+const API_URL = 'https://party-manager-back.onrender.com/api/';
+
 
 const api = axios.create({
     baseURL: API_URL,
@@ -84,9 +87,9 @@ export const fetchComments = (eventId) => {
     return api.get(`comments/?event=${eventId}`);
 };
 
-export const fetchUserRole = () => {
+export const fetchUserIsOrganizer = () => {
     const token = localStorage.getItem('authToken');
-    return axios.get(`${API_URL}user/role/`, {
+    return axios.get(`${API_URL}user/is_organizer/`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
