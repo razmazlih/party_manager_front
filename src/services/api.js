@@ -35,8 +35,16 @@ export const setAuthToken = (token) => {
 };
 
 // הפונקציות לאינטראקציה עם ה-API
-export const registerUser = (userData) => api.post('register/', userData);
-export const loginUser = (credentials) => api.post('token/', credentials);
+export const registerUser = (userData) => {
+    const lowercaseUserData = { ...userData, username: userData.username.toLowerCase() };
+    return api.post('register/', lowercaseUserData);
+};
+
+export const loginUser = (credentials) => {
+    const lowercaseCredentials = { ...credentials, username: credentials.username.toLowerCase() };
+    return api.post('token/', lowercaseCredentials);
+};
+
 export const fetchEvents = () => api.get('events/name-date/');
 export const fetchEventDetail = (eventId) => api.get(`events/${eventId}/`);
 
