@@ -85,12 +85,14 @@ const EventDetail = () => {
 
     if (!event) return <div>Loading...</div>;
 
+    const eventDateLocal = new Date(event.date).toLocaleString(); // ממיר את הזמן לזמן מקומי
+
     return (
         <div>
             <h1>{event.name}</h1>
             <p>{event.description}</p>
             <p>Location: {event.location}</p>
-            <p>Date: {event.date}</p>
+            <p>Date: {eventDateLocal}</p>
             <p>Price: {event.price}</p>
             <p>Available Places: {event.available_places}</p>
             <div>

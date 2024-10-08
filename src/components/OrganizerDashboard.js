@@ -34,9 +34,10 @@ const OrganizerDashboard = () => {
 
     const handleCreateEvent = (e) => {
         e.preventDefault();
+        const eventDateLocal = new Date(eventDate).toISOString();
         const eventData = {
             name: eventName,
-            date: eventDate,
+            date: eventDateLocal,
             description: eventDescription,
             location: eventLocation,
             price: eventPrice,
@@ -44,7 +45,6 @@ const OrganizerDashboard = () => {
         };
 
         createEvent(eventData).then((response) => {
-            alert('Event created successfully!');
             setEvents([...events, response.data]);
             setEventName('');
             setEventDate('');
