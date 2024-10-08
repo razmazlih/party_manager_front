@@ -14,12 +14,12 @@ api.interceptors.response.use(
     (response) => response,
     (error) => {
         if (error.response && error.response.status === 401) {
-            // אם הטוקן לא תקף, נמחוק את הטוקן ונפנה לדף ההתחברות
+            // אם הטוקן לא תקף, נמחוק את הטוקן 
             localStorage.removeItem('authToken');
             localStorage.removeItem('userId');
             
             // ניתוב לדף ההתחברות
-            window.location.href = '/login';
+            // window.location.href = '/login';
         }
         return Promise.reject(error);
     }
