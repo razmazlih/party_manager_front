@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { setAuthToken, fetchUserRole } from '../services/api';
+import { fetchUserIsOrganizer, setAuthToken } from '../services/api';
 import './styles.css';  // Importing the styles
 
 const Navbar = () => {
@@ -10,13 +10,12 @@ const Navbar = () => {
 
     useEffect(() => {
         if (userId) {
-            // בדיקת התפקיד של המשתמש
-            fetchUserRole().then((response) => {
-                if (response.data.role === 'organizer') {
+            fetchUserIsOrganizer().then((response) => {
+                if (response.data.is_organizer) { // שינוי הבדיקה לשדה is_organizer
                     setIsOrganizer(true);
                 }
             }).catch((error) => {
-                console.error('Error fetching user role:', error);
+                console.error('Error fetching user is_organizer status:', error);
             });
         }
     }, [userId]);

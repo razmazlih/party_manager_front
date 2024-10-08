@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { fetchUserRole, createEvent, fetchOrganizerEvents, fetchPendingReservations, approveReservation, rejectReservation } from '../services/api';
+import { fetchUserIsOrganizer, createEvent, fetchOrganizerEvents, fetchPendingReservations, approveReservation, rejectReservation } from '../services/api';
 import './OrganizerDashboard.css';
 import './styles.css';
 
@@ -18,8 +18,8 @@ const OrganizerDashboard = () => {
     const [selectedEventId, setSelectedEventId] = useState(null);
 
     useEffect(() => {
-        fetchUserRole().then((response) => {
-            if (response.data.role !== 'organizer') {
+        fetchUserIsOrganizer().then((response) => {
+            if (!response.data.is_organizer) { // שינוי הבדיקה לשדה is_organizer
                 navigate('/');
             } else {
                 fetchOrganizerEvents().then((response) => {
@@ -27,7 +27,7 @@ const OrganizerDashboard = () => {
                 });
             }
         }).catch((error) => {
-            console.error('Error fetching user role:', error);
+            console.error('Error fetching user is_organizer status:', error);
             navigate('/');
         });
     }, [navigate]);
