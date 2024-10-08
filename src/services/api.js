@@ -1,8 +1,8 @@
 import axios from 'axios';
 
-// const API_URL = 'http://127.0.0.1:8000/api/';
+const API_URL = 'http://127.0.0.1:8000/api/';
 
-const API_URL = 'https://party-manager-back.onrender.com/api/';
+// const API_URL = 'https://party-manager-back.onrender.com/api/';
 
 
 const api = axios.create({
@@ -37,7 +37,7 @@ export const setAuthToken = (token) => {
 // הפונקציות לאינטראקציה עם ה-API
 export const registerUser = (userData) => api.post('register/', userData);
 export const loginUser = (credentials) => api.post('token/', credentials);
-export const fetchEvents = () => api.get('events/');
+export const fetchEvents = () => api.get('events/name-date/');
 export const fetchEventDetail = (eventId) => api.get(`events/${eventId}/`);
 
 export const fetchUserReservations = (userId) => {
@@ -52,11 +52,8 @@ export const createReservation = (reservationData) => {
 
 export const fetchNotifications = () => {
     const token = localStorage.getItem('authToken');
-    return axios.get(`${API_URL}notifications/`, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    });
+    setAuthToken(token);
+    return api.get('notifications/');
 };
 
 export const createComment = (commentData) => {
@@ -89,11 +86,8 @@ export const fetchComments = (eventId) => {
 
 export const fetchUserIsOrganizer = () => {
     const token = localStorage.getItem('authToken');
-    return axios.get(`${API_URL}user/is_organizer/`, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-    });
+    setAuthToken(token);
+    return api.get('user/is_organizer/');
 };
 
 export const createEvent = (eventData) => {
