@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { fetchReservationDetail, cancelReservation } from '../services/api'; // ייבוא הפונקציה מה-API
-import { useParams } from 'react-router-dom';
-
+import { fetchReservationDetail, cancelReservation } from '../services/api';
+import { useParams, Link } from 'react-router-dom';
 
 const ReservationDetail = () => {
-    const { reservationId } = useParams(); // קבלת ה-ID של ההזמנה מה-URL
+    const { reservationId } = useParams();
     const [reservation, setReservation] = useState(null);
 
     useEffect(() => {
         fetchReservationDetail(reservationId)
             .then((response) => {
-                setReservation(response.data); // שמירת פרטי ההזמנה ב-state
+                setReservation(response.data);
             })
             .catch((error) => {
                 console.error('Error fetching reservation detail:', error);
@@ -24,7 +23,6 @@ const ReservationDetail = () => {
     const handleCancel = (reservationId) => {
         cancelReservation(reservationId)
             .then(() => {
-                // עדכון הסטטוס של ההזמנה ל"cancelled" ב-state של ההזמנה הנוכחית
                 setReservation(prevReservation => ({
                     ...prevReservation,
                     status: 'cancelled'
@@ -42,6 +40,9 @@ const ReservationDetail = () => {
             <p><strong>Date:</strong> {new Date(reservation.event_date).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}</p>
             <p><strong>Seats Reserved:</strong> {reservation.seats_reserved}</p>
             <p><strong>Reservation Date:</strong> {new Date(reservation.reservation_date).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}</p>
+            <p><Link to={`/events/${reservation.event}`} className="event-link-button">
+                Go to Event Details
+            </Link></p>
             {reservation.status === 'pending' && (
                 <button onClick={() => handleCancel(reservation.id)}>Cancel Reservation</button>
             )}
