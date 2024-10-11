@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { fetchUserIsOrganizer, createEvent, fetchOrganizerEvents, fetchPendingReservations, approveReservation, rejectReservation } from '../services/api';
 import './OrganizerDashboard.css';
 import './styles.css';
@@ -16,10 +16,11 @@ const OrganizerDashboard = () => {
     const [showPopup, setShowPopup] = useState(false);
     const [pendingReservations, setPendingReservations] = useState([]);
     const [selectedEventId, setSelectedEventId] = useState(null);
+    const [reservationsCache, setReservationsCache] = useState({});
 
     useEffect(() => {
         fetchUserIsOrganizer().then((response) => {
-            if (!response.data.is_organizer) { // שינוי הבדיקה לשדה is_organizer
+            if (!response.data.is_organizer) {
                 navigate('/');
             } else {
                 fetchOrganizerEvents().then((response) => {
@@ -60,17 +61,37 @@ const OrganizerDashboard = () => {
 
     const handleEventClick = (eventId) => {
         setSelectedEventId(eventId);
-        fetchPendingReservations(eventId).then((response) => {
-            setPendingReservations(response.data);
+
+        // Check if reservations are already cached for this event
+        if (reservationsCache[eventId]) {
+            
+            setPendingReservations(reservationsCache[eventId]);
             setShowPopup(true);
-        }).catch((error) => {
-            console.error('Error fetching reservations:', error);
-        });
+        } else {
+            // If not cached, fetch from server and cache the result
+            fetchPendingReservations(eventId).then((response) => {
+                setReservationsCache({
+                    ...reservationsCache,
+                    [eventId]: response.data
+                });
+                setPendingReservations(response.data);
+                setShowPopup(true);
+            }).catch((error) => {
+                console.error('Error fetching reservations:', error);
+            });
+        }
     };
 
     const handleApprove = (reservationId) => {
         approveReservation(reservationId).then(() => {
-            setPendingReservations(pendingReservations.filter(reservation => reservation.id !== reservationId));
+            const updatedReservations = pendingReservations.filter(reservation => reservation.id !== reservationId);
+            setPendingReservations(updatedReservations);
+
+            // Update cache for the selected event
+            setReservationsCache({
+                ...reservationsCache,
+                [selectedEventId]: updatedReservations
+            });
         }).catch((error) => {
             console.error('Error approving reservation:', error);
         });
@@ -78,7 +99,14 @@ const OrganizerDashboard = () => {
 
     const handleReject = (reservationId) => {
         rejectReservation(reservationId).then(() => {
-            setPendingReservations(pendingReservations.filter(reservation => reservation.id !== reservationId));
+            const updatedReservations = pendingReservations.filter(reservation => reservation.id !== reservationId);
+            setPendingReservations(updatedReservations);
+
+            // Update cache for the selected event
+            setReservationsCache({
+                ...reservationsCache,
+                [selectedEventId]: updatedReservations
+            });
         }).catch((error) => {
             console.error('Error rejecting reservation:', error);
         });
