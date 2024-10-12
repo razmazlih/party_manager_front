@@ -114,6 +114,7 @@ const EventManagement = () => {
             <div className="input-section">
                 <label htmlFor="scannedCode">Scanned Code:</label>
                 <input
+                    readOnly
                     type="text"
                     id="scannedCode"
                     value={scannedCode}
