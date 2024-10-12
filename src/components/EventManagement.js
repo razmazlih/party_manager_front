@@ -15,30 +15,45 @@ const EventManagement = () => {
     const [selectedDeviceId, setSelectedDeviceId] = useState('');
 
     useEffect(() => {
-        if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
-            navigator.mediaDevices.enumerateDevices().then(devices => {
-                const videoDevices = devices.filter(device => device.kind === 'videoinput');
-                setVideoDevices(videoDevices);
-                if (videoDevices.length > 0) {
-                    setSelectedDeviceId(videoDevices[0].deviceId);
-                }
-            }).catch((err) => {
-                console.error('Error accessing media devices:', err);
-            });
-        }
-
+        const updateVideoDevices = () => {
+            if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
+                navigator.mediaDevices.enumerateDevices().then(devices => {
+                    const videoDevices = devices.filter(device => device.kind === 'videoinput');
+                    setVideoDevices(videoDevices);
+                    // If no device is selected yet, set the first available camera
+                    if (videoDevices.length > 0 && !selectedDeviceId) {
+                        setSelectedDeviceId(videoDevices[0].deviceId);
+                    }
+                }).catch((err) => {
+                    console.error('Error accessing media devices:', err);
+                });
+            }
+        };
+    
+        // Initial call to set available video devices
+        updateVideoDevices();
+    
+        // Fetch event details and pending reservations
         fetchEventDetail(eventId).then((response) => {
             setEventDetails(response.data);
         }).catch((error) => {
             console.error('Error fetching event details:', error);
         });
-
+    
         fetchPendingReservations(eventId).then((response) => {
             setPendingReservations(response.data);
         }).catch((error) => {
             console.error('Error fetching pending reservations:', error);
         });
-    }, [eventId]);
+    
+        // Listen for device changes (e.g., new camera plugged in)
+        navigator.mediaDevices.addEventListener('devicechange', updateVideoDevices);
+    
+        // Cleanup the event listener on component unmount
+        return () => {
+            navigator.mediaDevices.removeEventListener('devicechange', updateVideoDevices);
+        };
+    }, [eventId, selectedDeviceId]);
 
     const handleApprove = (reservationId) => {
         approveReservation(reservationId).then(() => {
