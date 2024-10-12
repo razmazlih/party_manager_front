@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { fetchReservationDetail, cancelReservation } from '../services/api';
 import { useParams, Link } from 'react-router-dom';
+import { QRCodeCanvas } from 'qrcode.react';
 
 const ReservationDetail = () => {
     const { reservationId } = useParams();
@@ -40,6 +41,12 @@ const ReservationDetail = () => {
             <p><strong>Date:</strong> {new Date(reservation.event_date).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}</p>
             <p><strong>Seats Reserved:</strong> {reservation.seats_reserved}</p>
             <p><strong>Reservation Date:</strong> {new Date(reservation.reservation_date).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}</p>
+            {reservation.verification_code && (
+                <div>
+                    <p><strong>Verification Code:</strong></p>
+                    <QRCodeCanvas value={reservation.verification_code} size={150} />
+                </div>
+            )}
             <p><Link to={`/events/${reservation.event}`} className="event-link-button">
                 Go to Event Details
             </Link></p>
