@@ -93,7 +93,7 @@ const EventDetail = () => {
             <p>{event.description}</p>
             <p>Location: {event.location}</p>
             <p>Date: {eventDateLocal}</p>
-            <p>Price: {event.price}</p>
+            <p>Price: {event.price}₪</p>
             <p>Available Places: {event.available_places}</p>
             <div>
                 <label>

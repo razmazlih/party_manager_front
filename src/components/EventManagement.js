@@ -10,7 +10,7 @@ const EventManagement = () => {
     const [pendingReservations, setPendingReservations] = useState([]);
     const [showQrScanner, setShowQrScanner] = useState(false);
     const [scannedCode, setScannedCode] = useState('');  // Store scanned QR code
-    const [cameraAvailable, setCameraAvailable] = useState(true);
+    const [cameraAvailable] = useState(true);
     const [videoDevices, setVideoDevices] = useState([]);
     const [selectedDeviceId, setSelectedDeviceId] = useState('');
 
@@ -46,12 +46,24 @@ const EventManagement = () => {
             console.error('Error fetching pending reservations:', error);
         });
     
-        // Listen for device changes (e.g., new camera plugged in)
-        navigator.mediaDevices.addEventListener('devicechange', updateVideoDevices);
+        // Check if 'ondevicechange' is supported
+        if (navigator.mediaDevices && 'ondevicechange' in navigator.mediaDevices) {
+            navigator.mediaDevices.ondevicechange = updateVideoDevices;
+        } else {
+            // Fallback: Periodically check for device changes
+            const intervalId = setInterval(updateVideoDevices, 5000); // Check every 5 seconds
     
-        // Cleanup the event listener on component unmount
+            // Cleanup the interval on component unmount
+            return () => {
+                clearInterval(intervalId);
+            };
+        }
+    
+        // Cleanup the event listener on component unmount if supported
         return () => {
-            navigator.mediaDevices.removeEventListener('devicechange', updateVideoDevices);
+            if (navigator.mediaDevices && 'ondevicechange' in navigator.mediaDevices) {
+                navigator.mediaDevices.ondevicechange = null;
+            }
         };
     }, [eventId, selectedDeviceId]);
 
@@ -117,7 +129,7 @@ const EventManagement = () => {
             <p><strong>Date:</strong> {new Date(eventDetails.date).toLocaleString()}</p>
             <p><strong>Description:</strong> {eventDetails.description}</p>
             <p><strong>Location:</strong> {eventDetails.location}</p>
-            <p><strong>Price:</strong> ${eventDetails.price}</p>
+            <p><strong>Price:</strong> {eventDetails.price}₪</p>
             <p><strong>Available Places:</strong> {eventDetails.available_places}</p>
 
             {/* QR Scanner Button */}
