@@ -5,7 +5,7 @@ import './styles.css';
 
 const EventDetail = () => {
     const { id } = useParams();
-    const navigate = useNavigate(); // הגדרת useNavigate
+    const navigate = useNavigate();
     const [event, setEvent] = useState(null);
     const [seats, setSeats] = useState(1);
     const [comments, setComments] = useState([]);
@@ -34,9 +34,9 @@ const EventDetail = () => {
             seats_reserved: seats,
         };
 
-        createReservation(reservationData).then(() => {
-            alert('Reservation created successfully!');
-            navigate('/my-reservations');
+        createReservation(reservationData).then( response => {
+            const reservationId = response.data.id;
+            navigate(`/reservations/${reservationId}`);
         }).catch((error) => {
             console.error('Error creating reservation:', error);
             alert('Failed to create reservation. Please check the input.');
