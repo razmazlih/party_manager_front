@@ -6,9 +6,10 @@ import EventDetail from './components/EventDetail';
 import Login from './components/Login';
 import Register from './components/Register';
 import ReservationList from './components/ReservationList';
-import ReservationDetail from './components/ReservationDetail'; // ייבוא של קומפוננטת ReservationDetail
+import ReservationDetail from './components/ReservationDetail'; 
 import OrganizerDashboard from './components/OrganizerDashboard';
 import NotificationList from './components/NotificationList';
+import EventManagement from './components/EventManagement'; // ייבוא קומפוננטת ניהול האירועים
 
 function App() {
     const userId = localStorage.getItem('userId');
@@ -30,9 +31,10 @@ function App() {
                             element={!userId ? <Register /> : <Navigate to="/" />} 
                         />
                         <Route path="/my-reservations" element={<ReservationList />} />
-                        <Route path="/reservations/:reservationId" element={<ReservationDetail />} /> {/* הוספת המסלול לפרטי הזמנה */}
+                        <Route path="/reservations/:reservationId" element={<ReservationDetail />} /> 
                         <Route path="/organizer-dashboard" element={<OrganizerDashboard />} />
                         <Route path="/notifications" element={<NotificationList />} />
+                        <Route path="/event-management/:eventId" element={<EventManagement />} /> {/* הוספת הנתיב לדף ניהול האירועים */}
                     </Routes>
                 </div>
             </div>

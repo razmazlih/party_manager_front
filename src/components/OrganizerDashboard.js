@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { fetchUserIsOrganizer, createEvent, fetchOrganizerEvents, fetchPendingReservations, approveReservation, rejectReservation } from '../services/api';
+import { fetchUserIsOrganizer, createEvent, fetchOrganizerEvents } from '../services/api';
 import './OrganizerDashboard.css';
 import './styles.css';
 
@@ -13,10 +13,6 @@ const OrganizerDashboard = () => {
     const [eventPrice, setEventPrice] = useState('');
     const [eventPlaces, setEventPlaces] = useState('');
     const [events, setEvents] = useState([]);
-    const [showPopup, setShowPopup] = useState(false);
-    const [pendingReservations, setPendingReservations] = useState([]);
-    const [selectedEventId, setSelectedEventId] = useState(null);
-    const [reservationsCache, setReservationsCache] = useState({});
 
     useEffect(() => {
         fetchUserIsOrganizer().then((response) => {
@@ -56,59 +52,6 @@ const OrganizerDashboard = () => {
         }).catch((error) => {
             console.error('Error creating event:', error);
             alert('Failed to create event.');
-        });
-    };
-
-    const handleEventClick = (eventId) => {
-        setSelectedEventId(eventId);
-
-        // Check if reservations are already cached for this event
-        if (reservationsCache[eventId]) {
-            
-            setPendingReservations(reservationsCache[eventId]);
-            setShowPopup(true);
-        } else {
-            // If not cached, fetch from server and cache the result
-            fetchPendingReservations(eventId).then((response) => {
-                setReservationsCache({
-                    ...reservationsCache,
-                    [eventId]: response.data
-                });
-                setPendingReservations(response.data);
-                setShowPopup(true);
-            }).catch((error) => {
-                console.error('Error fetching reservations:', error);
-            });
-        }
-    };
-
-    const handleApprove = (reservationId) => {
-        approveReservation(reservationId).then(() => {
-            const updatedReservations = pendingReservations.filter(reservation => reservation.id !== reservationId);
-            setPendingReservations(updatedReservations);
-
-            // Update cache for the selected event
-            setReservationsCache({
-                ...reservationsCache,
-                [selectedEventId]: updatedReservations
-            });
-        }).catch((error) => {
-            console.error('Error approving reservation:', error);
-        });
-    };
-
-    const handleReject = (reservationId) => {
-        rejectReservation(reservationId).then(() => {
-            const updatedReservations = pendingReservations.filter(reservation => reservation.id !== reservationId);
-            setPendingReservations(updatedReservations);
-
-            // Update cache for the selected event
-            setReservationsCache({
-                ...reservationsCache,
-                [selectedEventId]: updatedReservations
-            });
-        }).catch((error) => {
-            console.error('Error rejecting reservation:', error);
         });
     };
 
@@ -181,8 +124,14 @@ const OrganizerDashboard = () => {
                 {events.length > 0 ? (
                     <ul>
                         {events.map((event) => (
-                            <li key={event.id} onClick={() => handleEventClick(event.id)}>
+                            <li key={event.id}>
                                 {event.name} - {new Date(event.date).toLocaleDateString()}
+                                <button 
+                                    onClick={() => navigate(`/event-management/${event.id}`)}
+                                    className="manage-event-button"
+                                >
+                                    Manage Event
+                                </button>
                             </li>
                         ))}
                     </ul>
@@ -190,24 +139,6 @@ const OrganizerDashboard = () => {
                     <p>No events found.</p>
                 )}
             </div>
-
-            {showPopup && (
-                <div className="popup">
-                    <div className="popup-content">
-                        <h2>Pending Reservations</h2>
-                        <ul>
-                            {pendingReservations.map((reservation) => (
-                                <li key={reservation.id}>
-                                    {reservation.user_name}
-                                    <button onClick={() => handleApprove(reservation.id)}>Approve</button>
-                                    <button onClick={() => handleReject(reservation.id)}>Reject</button>
-                                </li>
-                            ))}
-                        </ul>
-                        <button onClick={() => setShowPopup(false)}>Close</button>
-                    </div>
-                </div>
-            )}
         </div>
     );
 };

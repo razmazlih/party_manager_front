@@ -1,0 +1,71 @@
+.event-management-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.event-management-container h1 {
+    color: #007bff;
+}
+
+.event-management-container p {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+.event-management-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.event-management-container h1 {
+    color: #007bff;
+}
+
+.event-management-container p {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+.pending-reservations-section {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: #e9f7ef;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.pending-reservations-section h2 {
+    color: #28a745;
+}
+
+.pending-reservations-section ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.pending-reservations-section li {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.pending-reservations-section button {
+    margin-left: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.pending-reservations-section button:hover {
+    background-color: #0056b3;
+}

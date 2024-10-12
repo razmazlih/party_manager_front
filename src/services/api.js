@@ -126,4 +126,10 @@ export const rejectReservation = (reservationId) => {
     return api.post(`reservations/${reservationId}/reject/`);
 };
 
+export const verifyEventCode = (eventId, verificationCode) => {
+    const token = localStorage.getItem('authToken');
+    setAuthToken(token);
+    return api.post(`events/${eventId}/verify_event_code/`, { verification_code: verificationCode });
+};
+
 export default api;
