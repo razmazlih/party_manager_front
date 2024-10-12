@@ -45,6 +45,9 @@ const ReservationDetail = () => {
                 <div>
                     <p><strong>Verification Code:</strong></p>
                     <QRCodeCanvas value={reservation.verification_code} size={150} />
+                    {reservation.is_verified && (
+                        <p style={{ color: 'green' }}>Scanned</p>
+                    )}
                 </div>
             )}
             <p><Link to={`/events/${reservation.event}`} className="event-link-button">
