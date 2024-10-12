@@ -9,22 +9,22 @@ const EventManagement = () => {
     const [eventDetails, setEventDetails] = useState(null);
     const [pendingReservations, setPendingReservations] = useState([]);
     const [showQrScanner, setShowQrScanner] = useState(false);
-    const [setScannedCode] = useState('');
-    const [cameraAvailable, setCameraAvailable] = useState(true); // משתנה לבדיקה אם המצלמה זמינה
+    const [scannedCode, setScannedCode] = useState('');  // Store scanned QR code
+    const [cameraAvailable, setCameraAvailable] = useState(true);
+    const [videoDevices, setVideoDevices] = useState([]);
+    const [selectedDeviceId, setSelectedDeviceId] = useState('');
 
     useEffect(() => {
-        // בדיקה אם הדפדפן תומך ב- getUserMedia
-        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-            navigator.mediaDevices.getUserMedia({ video: true })
-                .then(() => {
-                    setCameraAvailable(true);
-                })
-                .catch((err) => {
-                    console.error('Camera not accessible:', err);
-                    setCameraAvailable(false);
-                });
-        } else {
-            setCameraAvailable(false);
+        if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
+            navigator.mediaDevices.enumerateDevices().then(devices => {
+                const videoDevices = devices.filter(device => device.kind === 'videoinput');
+                setVideoDevices(videoDevices);
+                if (videoDevices.length > 0) {
+                    setSelectedDeviceId(videoDevices[0].deviceId);
+                }
+            }).catch((err) => {
+                console.error('Error accessing media devices:', err);
+            });
         }
 
         fetchEventDetail(eventId).then((response) => {
@@ -60,8 +60,8 @@ const EventManagement = () => {
 
     const handleScan = (data) => {
         if (data) {
-            setScannedCode(data.text);
-            verifyCode(data.text);
+            setScannedCode(data.text);  // Automatically fill input with the scanned code
+            setShowQrScanner(false);    // Close the QR scanner popup
         }
     };
 
@@ -69,18 +69,27 @@ const EventManagement = () => {
         console.error('Error scanning QR code:', err);
     };
 
-    const verifyCode = async (verificationCode) => {
+    const verifyCode = async () => {
         try {
-            const response = await verifyEventCode(eventId, verificationCode);
+            const response = await verifyEventCode(eventId, scannedCode);
             if (response.data.status === 'Already scanned') {
                 alert(`Code has already been scanned by: ${response.data.user_name}`);
             } else {
                 alert(`Verification successful for: ${response.data.user_name}`);
             }
+            setScannedCode('');  // Clear the input field after verification
         } catch (error) {
             console.error('Verification failed:', error);
             alert('Invalid verification code.');
         }
+    };
+
+    const handleCameraChange = (event) => {
+        setSelectedDeviceId(event.target.value);
+    };
+
+    const closeModal = () => {
+        setShowQrScanner(false);
     };
 
     if (!eventDetails) {
@@ -96,21 +105,55 @@ const EventManagement = () => {
             <p><strong>Price:</strong> ${eventDetails.price}</p>
             <p><strong>Available Places:</strong> {eventDetails.available_places}</p>
 
-            <button onClick={() => setShowQrScanner(!showQrScanner)}>
+            {/* QR Scanner Button */}
+            <button onClick={() => setShowQrScanner(true)}>
                 {showQrScanner ? 'Hide QR Scanner' : 'Open QR Scanner'}
             </button>
 
-            {showQrScanner && cameraAvailable ? (
-                <div className="qr-scanner">
-                    <QrScanner
-                        delay={300}
-                        onError={handleError}
-                        onScan={handleScan}
-                        style={{ width: '100%' }}
-                    />
+            {/* Input Field and Verify Button */}
+            <div className="input-section">
+                <label htmlFor="scannedCode">Scanned Code:</label>
+                <input
+                    type="text"
+                    id="scannedCode"
+                    value={scannedCode}
+                    onChange={(e) => setScannedCode(e.target.value)}
+                    placeholder="The scanned QR code will appear here"
+                />
+                <button onClick={verifyCode} disabled={!scannedCode}>
+                    Verify
+                </button>
+            </div>
+
+            {/* QR Scanner Popup Modal */}
+            {showQrScanner && (
+                <div className="modal">
+                    <div className="modal-content">
+                        <span className="close" onClick={closeModal}>&times;</span>
+                        <label>Select Camera:</label>
+                        <select value={selectedDeviceId} onChange={handleCameraChange}>
+                            {videoDevices.map((device, index) => (
+                                <option key={index} value={device.deviceId}>
+                                    {device.label || `Camera ${index + 1}`}
+                                </option>
+                            ))}
+                        </select>
+
+                        {cameraAvailable ? (
+                            <div className="qr-scanner">
+                                <QrScanner
+                                    delay={300}
+                                    onError={handleError}
+                                    onScan={handleScan}
+                                    style={{ width: '100%' }}
+                                    constraints={{ video: { deviceId: selectedDeviceId } }}
+                                />
+                            </div>
+                        ) : (
+                            <p>Camera is not available on this device or browser. Please enable camera permissions or use a supported device.</p>
+                        )}
+                    </div>
                 </div>
-            ) : (
-                !cameraAvailable && <p>Camera is not available on this device or browser. Please enable camera permissions or use a supported device.</p>
             )}
 
             <div className="pending-reservations-section">
