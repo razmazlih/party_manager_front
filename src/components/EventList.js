@@ -20,13 +20,17 @@ const EventList = () => {
     return (
         <div className="event-list-container">
             <h1>Upcoming Events</h1>
-            {events.map((event) => (
-                <div key={event.id} className="event-card">
-                    <h2 className="event-title">{event.name}</h2>
-                    <p className="event-date">Date: {new Date(event.date).toLocaleDateString()}</p>
-                    <Link to={`/events/${event.id}`} className="event-link">View Details</Link>
-                </div>
-            ))}
+            {events.length === 0 ? (
+                <p>No upcoming events.</p> // הודעה במידה ואין אירועים עתידיים
+            ) : (
+                events.map((event) => (
+                    <div key={event.id} className="event-card">
+                        <h2 className="event-title">{event.name}</h2>
+                        <p className="event-date">Date: {new Date(event.date).toLocaleDateString()}</p>
+                        <Link to={`/events/${event.id}`} className="event-link">View Details</Link>
+                    </div>
+                ))
+            )}
         </div>
     );
 };
