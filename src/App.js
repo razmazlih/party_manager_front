@@ -9,12 +9,14 @@ import ReservationList from './components/ReservationList';
 import ReservationDetail from './components/ReservationDetail'; 
 import OrganizerDashboard from './components/OrganizerDashboard';
 import NotificationList from './components/NotificationList';
-import EventManagement from './components/EventManagement'; // ייבוא קומפוננטת ניהול האירועים
+import EventManagement from './components/EventManagement';
+import { AuthProvider } from './contexts/AuthContext';
 
 function App() {
     const userId = localStorage.getItem('userId');
 
     return (
+        <AuthProvider>
         <Router>
             <div>
                 <Navbar />
@@ -39,6 +41,7 @@ function App() {
                 </div>
             </div>
         </Router>
+        </AuthProvider>
     );
 }
 
