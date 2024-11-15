@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { fetchReservationDetail, cancelReservation } from '../services/api';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { QRCodeCanvas } from 'qrcode.react';
+import './styles.css';
 
 const ReservationDetail = () => {
     const { reservationId } = useParams();
+    const navigate = useNavigate();
     const [reservation, setReservation] = useState(null);
 
     useEffect(() => {
@@ -17,22 +19,26 @@ const ReservationDetail = () => {
             });
     }, [reservationId]);
 
-    if (!reservation) {
-        return <p>Loading reservation details...</p>;
-    }
-
     const handleCancel = (reservationId) => {
         cancelReservation(reservationId)
             .then(() => {
-                setReservation(prevReservation => ({
+                setReservation((prevReservation) => ({
                     ...prevReservation,
-                    status: 'cancelled'
+                    status: 'cancelled',
                 }));
             })
             .catch((error) => {
                 console.error('Error cancelling reservation:', error);
             });
     };
+
+    const handleBackToReservations = () => {
+        navigate('/my-reservations');
+    };
+
+    if (!reservation) {
+        return <p>Loading reservation details...</p>;
+    }
 
     return (
         <div className="reservation-detail-container">
@@ -50,12 +56,16 @@ const ReservationDetail = () => {
                     )}
                 </div>
             )}
-            <p><Link to={`/events/${reservation.event}`} className="event-link-button">
-                Go to Event Details
-            </Link></p>
-            {reservation.status === 'pending' && (
-                <button onClick={() => handleCancel(reservation.id)}>Cancel Reservation</button>
-            )}
+            <div className="buttons-container">
+                <button className="back-button" onClick={handleBackToReservations}>
+                    Back to Reservations
+                </button>
+                {reservation.status === 'pending' && (
+                    <button className="cancel-button" onClick={() => handleCancel(reservation.id)}>
+                        Cancel Reservation
+                    </button>
+                )}
+            </div>
         </div>
     );
 };

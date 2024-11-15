@@ -7,20 +7,29 @@
 
 .event-card {
     background-color: #fff;
-    padding: 20px;
-    margin-bottom: 20px;
     border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* צל כהה מעט */
     transition: transform 0.2s, box-shadow 0.2s;
     text-decoration: none; /* לבטל קו תחתון */
     color: inherit; /* לשמור על הצבעים המקוריים */
-    display: block; /* לוודא שהכרטיס כולו לחיץ */
+    display: flex; /* שימוש ב-Flexbox */
+    flex-direction: column; /* סידור התוכן אנכית */
+    justify-content: center;
+    align-items: center;
+    text-align: center; /* ליישר טקסט */
+    height: 150px; /* להגדיר גובה אחיד */
+    border: 1px solid rgba(0, 0, 0, 0.1); /* קצה כהה */
 }
 
 .event-card:hover {
+    transform: scale(1.03); /* הגדלה קלה */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* צל עמוק יותר במעבר עכבר */
+}
+/* 
+.event-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-}
+} */
 
 .event-title {
     font-size: 1.5em;
