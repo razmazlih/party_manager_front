@@ -7,17 +7,14 @@ const api = axios.create({
     baseURL: API_URL,
 });
 
-// הוספת Interceptor ל-Axios לבדיקת תוקף ה-token
 api.interceptors.response.use(
     (response) => response,
     (error) => {
         if (error.response && error.response.status === 401) {
-            // אם הטוקן לא תקף, נמחוק את הטוקן 
             localStorage.removeItem('authToken');
             localStorage.removeItem('refreshToken');
             localStorage.removeItem('userId');
             
-            // ניתוב לדף ההתחברות
             window.location.href = '/login';
         }
         return Promise.reject(error);
