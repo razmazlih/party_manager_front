@@ -26,11 +26,25 @@ h1 {
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     text-align: center;
+    text-decoration: none; /* ביטול קו תחתון */
+    color: inherit; /* שמירה על צבעי הטקסט */
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: block; /* וודא שכל הכרטיס לחיץ */
+}
+
+.reservation-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 .reservation-card h2 {
     color: #007bff;
     margin-bottom: 10px;
+}
+
+.reservation-card p {
+    color: #555;
+    margin: 5px 0;
 }
 
 .no-reservations-message {

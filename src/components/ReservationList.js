@@ -34,14 +34,16 @@ const ReservationList = () => {
             {filteredReservations.length > 0 ? (
                 <div className="reservation-cards">
                     {filteredReservations.map((reservation) => (
-                        <div key={reservation.id} className="reservation-card">
-                            <Link to={`/reservations/${reservation.id}`}>
-                                <h2>{reservation.event_name}</h2>
-                            </Link>
+                        <Link
+                            to={`/reservations/${reservation.id}`}
+                            key={reservation.id}
+                            className="reservation-card"
+                        >
+                            <h2>{reservation.event_name}</h2>
                             <p><strong>Status:</strong> {reservation.status}</p>
                             <p><strong>Date:</strong> {new Date(reservation.event_date).toLocaleDateString()}</p>
                             <p><strong>Seats Reserved:</strong> {reservation.seats_reserved}</p>
-                        </div>
+                        </Link>
                     ))}
                 </div>
             ) : (
