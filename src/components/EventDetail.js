@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { fetchEventDetail, createReservation, fetchComments, createComment, deleteComment } from '../services/api';
+import './EventDetail.css';
 import './styles.css';
 
 const EventDetail = () => {
@@ -85,17 +86,19 @@ const EventDetail = () => {
 
     if (!event) return <div>Loading...</div>;
 
-    const eventDateLocal = new Date(event.date).toLocaleString(); // ממיר את הזמן לזמן מקומי
+    const eventDateLocal = new Date(event.date).toLocaleString();
 
     return (
         <div>
             <h1>{event.name}</h1>
+            <p className="event-date">{eventDateLocal}</p>
             <p>{event.description}</p>
             <p>Location: {event.location}</p>
-            <p>Date: {eventDateLocal}</p>
             <p>Price: {event.price}₪</p>
-            <p>Available Places: {event.available_places}</p>
-            <div>
+            <div className="available-places-container">
+                <p className="available-places">Available Places: {event.available_places}</p>
+            </div>
+            <div className="reservation-container">
                 <label>
                     Seats:
                     <input
