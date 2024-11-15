@@ -49,10 +49,13 @@ const ReservationDetail = () => {
             <p><strong>Reservation Date:</strong> {new Date(reservation.reservation_date).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}</p>
             {reservation.verification_code && (
                 <div>
-                    <p><strong>Verification Code:</strong></p>
-                    <QRCodeCanvas value={reservation.verification_code} size={150} />
-                    {reservation.is_verified && (
-                        <p style={{ color: 'green' }}>Scanned</p>
+                    {reservation.is_verified ? (
+                        <p style={{ color: 'green', fontWeight: 'bold' }}>Scanned</p>
+                    ) : (
+                        <>
+                            <p><strong>Verification Code:</strong></p>
+                            <QRCodeCanvas value={reservation.verification_code} size={150} />
+                        </>
                     )}
                 </div>
             )}
