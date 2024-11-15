@@ -9,15 +9,17 @@ const EventList = () => {
     const [filteredEvents, setFilteredEvents] = useState([]);
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
+    const [isLoading, setIsLoading] = useState(true); // מצב טעינה
 
     useEffect(() => {
         fetchEvents().then((response) => {
             const currentDate = new Date();
             const futureEvents = response.data
                 .filter(event => new Date(event.date) > currentDate)
-                .sort((a, b) => new Date(a.date) - new Date(b.date)); // מיון האירועים מהקרוב לרחוק
+                .sort((a, b) => new Date(a.date) - new Date(b.date));
             setEvents(futureEvents);
             setFilteredEvents(futureEvents);
+            setIsLoading(false); // סיום טעינה
         });
     }, []);
 
@@ -67,15 +69,22 @@ const EventList = () => {
                     <button className="reset-button" onClick={handleReset}>Reset</button>
                 </div>
             </div>
-            {filteredEvents.length === 0 ? (
-                <p>No events found for the selected date range.</p>
+            {isLoading ? (
+                <div className="loading-container">
+                    <div className="loading-spinner"></div>
+                    <p>Loading events...</p>
+                </div>
             ) : (
-                filteredEvents.map((event) => (
-                    <Link to={`/events/${event.id}`} key={event.id} className="event-card">
-                        <h2 className="event-title">{event.name}</h2>
-                        <p className="event-date">Date: {new Date(event.date).toLocaleDateString()}</p>
-                    </Link>
-                ))
+                filteredEvents.length === 0 ? (
+                    <p>No events found for the selected date range.</p>
+                ) : (
+                    filteredEvents.map((event) => (
+                        <Link to={`/events/${event.id}`} key={event.id} className="event-card">
+                            <h2 className="event-title">{event.name}</h2>
+                            <p className="event-date">Date: {new Date(event.date).toLocaleDateString()}</p>
+                        </Link>
+                    ))
+                )
             )}
         </div>
     );
