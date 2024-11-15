@@ -50,7 +50,7 @@ const ReservationDetail = () => {
             {reservation.verification_code && (
                 <div>
                     {reservation.is_verified ? (
-                        <p style={{ color: 'green', fontWeight: 'bold' }}>Scanned</p>
+                        <p style={{ color: 'green', fontWeight: 'bold' }}>Barcode Scanned</p>
                     ) : (
                         <>
                             <p><strong>Verification Code:</strong></p>
