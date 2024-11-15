@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode'; // תיקון הייבוא
+import { jwtDecode } from 'jwt-decode'; 
 import { loginUser, setAuthToken } from '../services/api';
 import './styles.css';
 
@@ -12,19 +12,17 @@ const Login = () => {
     const handleLogin = () => {
         loginUser({ username, password })
             .then((response) => {
-                const { access, refresh } = response.data; // קבלת ה-access ו-refresh tokens
-    
-                // פענוח ה-access token כדי לקבל את ה-user_id
+                const { access, refresh } = response.data;
                 const decodedToken = jwtDecode(access);
                 const user_id = decodedToken.user_id;
-    
-                if (user_id) { // בדיקה אם user_id קיים
+
+                if (user_id) {
                     setAuthToken(access);
-                    localStorage.setItem('authToken', access); // שמירת ה-access token
-                    localStorage.setItem('refreshToken', refresh); // שמירת ה-refresh token
+                    localStorage.setItem('authToken', access);
+                    localStorage.setItem('refreshToken', refresh);
                     localStorage.setItem('userId', user_id);
-    
-                    navigate('/'); // חזרה לדף הבית
+
+                    navigate('/');
                 } else {
                     alert('Login failed. Invalid token.');
                 }
@@ -35,20 +33,28 @@ const Login = () => {
             });
     };
 
+    const handleKeyPress = (e) => {
+        if (e.key === 'Enter') {
+            handleLogin();
+        }
+    };
+
     return (
-        <div className="container">
+        <div className="auth-container">
             <h1>Login</h1>
             <input
                 type="text"
                 placeholder="Username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
+                onKeyPress={handleKeyPress}
             />
             <input
                 type="password"
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                onKeyPress={handleKeyPress}
             />
             <button onClick={handleLogin}>Login</button>
         </div>
