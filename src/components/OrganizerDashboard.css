@@ -69,3 +69,54 @@
 .organizer-events-list button.manage-event-button:hover {
     background-color: #218838;
 }
+
+.toggle-past-events-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1.1em;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.toggle-past-events-button:hover {
+    background-color: #0056b3;
+}
+
+.past-events-section {
+    margin-top: 30px;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.organizer-events-list button.past-event-button {
+    background-color: #6c757d;
+    color: white;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.organizer-events-list button.past-event-button:hover {
+    background-color: #5a6268;
+}
+
+.toggle-create-event-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1.1em;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.toggle-create-event-button:hover {
+    background-color: #0056b3;
+}
