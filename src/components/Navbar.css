@@ -20,7 +20,7 @@ nav ul.collapsed {
 }
 
 nav ul.open {
-    max-height: 500px; /* Adjust according to the menu size */
+    max-height: 500px;
 }
 
 nav ul li a {
@@ -83,12 +83,12 @@ button:focus {
 
     .menu-toggle {
         width: 100%;
-        display: block; /* Ensure the button is visible */
+        display: block;
     }
 }
 
 @media (min-width: 769px) {
     .menu-toggle {
-        display: none; /* Hide the button in horizontal view */
+        display: none;
     }
 }

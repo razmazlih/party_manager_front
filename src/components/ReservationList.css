@@ -26,10 +26,10 @@ h1 {
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     text-align: center;
-    text-decoration: none; /* ביטול קו תחתון */
-    color: inherit; /* שמירה על צבעי הטקסט */
+    text-decoration: none;
+    color: inherit;
     transition: transform 0.2s, box-shadow 0.2s;
-    display: block; /* וודא שכל הכרטיס לחיץ */
+    display: block;
 }
 
 .reservation-card:hover {
