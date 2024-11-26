@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { fetchReservationDetail, cancelReservation } from '../services/api';
 import { useParams, useNavigate } from 'react-router-dom';
 import { QRCodeCanvas } from 'qrcode.react';
-import './styles.css';
 
 const ReservationDetail = () => {
     const { reservationId } = useParams();

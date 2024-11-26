@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { fetchNotifications } from '../services/api';
-import './NotificationList.css';
-import './styles.css';
+import './styles/NotificationList.css';
 
 const NotificationList = () => {
     const [notifications, setNotifications] = useState([]);

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import { jwtDecode } from 'jwt-decode'; 
 import { registerUser, loginUser, setAuthToken } from '../services/api'; 
-import './styles.css';
 
 const Register = () => {
     const [userData, setUserData] = useState({

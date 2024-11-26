@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchUserIsOrganizer, createEvent, fetchOrganizerEvents } from '../services/api';
-import './OrganizerDashboard.css';
-import './styles.css';
+import './styles/OrganizerDashboard.css';
 
 const OrganizerDashboard = () => {
     const navigate = useNavigate();

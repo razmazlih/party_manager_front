@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { fetchEventDetail, createReservation, fetchComments, createComment, deleteComment } from '../services/api';
-import './EventDetail.css';
-import './styles.css';
+import './styles/EventDetail.css';
 
 const EventDetail = () => {
     const { id } = useParams();

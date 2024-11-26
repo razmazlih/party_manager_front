@@ -3,8 +3,7 @@ import { fetchEvents } from '../services/api';
 import EventCard from './EventList/EventCard';
 import FilterEvents from './EventList/FilterEvents';
 import LoadingSpinner from './EventList/LoadingSpinner';
-import './styles.css';
-import './EventList.css';
+import './styles/EventList.css';
 
 const EventList = () => {
     const [events, setEvents] = useState([]);

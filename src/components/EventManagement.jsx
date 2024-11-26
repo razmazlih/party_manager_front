@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { fetchEventDetail, fetchPendingReservations, approveReservation, rejectReservation, verifyEventCode } from '../services/api';
 import QrScanner from 'react-qr-scanner';
-import './EventManagement.css';
+import './styles/EventManagement.css';
 
 const EventManagement = () => {
     const { eventId } = useParams();

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { fetchUserReservations } from '../services/api';
 import { Link } from 'react-router-dom';
-import './ReservationList.css';
+import './styles/ReservationList.css';
 
 const ReservationList = () => {
     const [reservations, setReservations] = useState([]);

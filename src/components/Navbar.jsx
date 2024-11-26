@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { fetchUserIsOrganizer, setAuthToken } from '../services/api';
-import './styles.css';
-import './Navbar.css';
+import './styles/styles.css';
+import './styles/Navbar.css';
 
 const Navbar = () => {
     const navigate = useNavigate();
