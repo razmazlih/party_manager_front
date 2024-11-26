@@ -1,22 +1,18 @@
-import React, { createContext, useState, useEffect } from 'react';
+import React, { createContext, useState, useEffect, useCallback } from 'react';
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('authToken'));
+    const [isAuthenticated, setIsAuthenticated] = useState(() => !!localStorage.getItem('authToken'));
 
-    const logout = () => {
-        localStorage.removeItem('authToken');
-        localStorage.removeItem('refreshToken');
-        localStorage.removeItem('userId');
+    const logout = useCallback(() => {
+        ['authToken', 'refreshToken', 'userId'].forEach((item) => localStorage.removeItem(item));
         setIsAuthenticated(false);
-    };
+    }, []);
 
     useEffect(() => {
-        // Listen for logout or token expiry actions
-        if (!localStorage.getItem('authToken')) {
-            setIsAuthenticated(false);
-        }
+        const authToken = localStorage.getItem('authToken');
+        setIsAuthenticated(!!authToken);
     }, []);
 
     return (

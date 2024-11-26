@@ -1,28 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { fetchEventDetail, createReservation, fetchComments, createComment, deleteComment } from '../services/api';
+import {
+    fetchEventDetail,
+    createReservation,
+    fetchComments,
+    createComment,
+    deleteComment,
+} from '../services/api';
+import EventHeader from './EventDetail/EventHeader';
+import EventInfo from './EventDetail/EventInfo';
+import ReservationForm from './EventDetail/ReservationForm';
+import CommentsSection from './EventDetail/CommentsSection';
+import AddCommentForm from './EventDetail/AddCommentForm';
 import './styles/EventDetail.css';
 
 const EventDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const [event, setEvent] = useState(null);
-    const [seats, setSeats] = useState(1);
     const [comments, setComments] = useState([]);
-    const [commentText, setCommentText] = useState('');
     const userId = localStorage.getItem('userId');
 
     useEffect(() => {
-        fetchEventDetail(id).then((response) => {
-            setEvent(response.data);
-        });
-
-        fetchComments(id).then((response) => {
-            setComments(response.data);
-        });
+        fetchEventDetail(id).then((response) => setEvent(response.data));
+        fetchComments(id).then((response) => setComments(response.data));
     }, [id]);
 
-    const handleReservation = () => {
+    const handleReservation = (seats) => {
         if (!userId) {
             alert('Please log in to make a reservation.');
             return;
@@ -34,53 +38,42 @@ const EventDetail = () => {
             seats_reserved: seats,
         };
 
-        createReservation(reservationData).then( response => {
-            const reservationId = response.data.id;
-            navigate(`/reservations/${reservationId}`);
-        }).catch((error) => {
-            console.error('Error creating reservation:', error);
-            alert('Failed to create reservation. Please check the input.');
-        });
+        createReservation(reservationData)
+            .then((response) => navigate(`/reservations/${response.data.id}`))
+            .catch((error) => {
+                console.error('Error creating reservation:', error);
+                alert('Failed to create reservation. Please check the input.');
+            });
     };
 
-    const handleAddComment = () => {
-        if (!userId) {
-            alert('Please log in to add a comment.');
-            return;
-        }
-    
-        if (comments.some(comment => comment.user === userId)) {
-            alert('You have already added a comment for this event.');
-            return;
-        }
-    
-        const commentData = {
-            event: id,
-            content: commentText,
-            user: userId
-        };
-    
-        createComment(commentData).then(() => {
-            alert('Comment added successfully!');
-            fetchComments(id).then((response) => {
-                setComments(response.data);
+    const handleAddComment = (text) => {
+        const commentData = { event: id, content: text, user: userId };
+
+        createComment(commentData)
+            .then(() => {
+                alert('Comment added successfully!');
+                fetchComments(id).then((response) =>
+                    setComments(response.data)
+                );
+            })
+            .catch((error) => {
+                console.error('Error adding comment:', error);
+                alert('Failed to add comment.');
             });
-        }).catch((error) => {
-            console.error('Error adding comment:', error);
-            alert('Failed to add comment.');
-        });
     };
 
     const handleDeleteComment = (commentId) => {
-        deleteComment(commentId).then(() => {
-            alert('Comment deleted successfully!');
-            fetchComments(id).then((response) => {
-                setComments(response.data);
+        deleteComment(commentId)
+            .then(() => {
+                alert('Comment deleted successfully!');
+                fetchComments(id).then((response) =>
+                    setComments(response.data)
+                );
+            })
+            .catch((error) => {
+                console.error('Error deleting comment:', error);
+                alert('Failed to delete comment.');
             });
-        }).catch((error) => {
-            console.error('Error deleting comment:', error);
-            alert('Failed to delete comment.');
-        });
     };
 
     if (!event) return <div>Loading...</div>;
@@ -89,62 +82,29 @@ const EventDetail = () => {
 
     return (
         <div>
-            <h1>{event.name}</h1>
-            <p className="event-date">{eventDateLocal}</p>
-            <p>{event.description}</p>
-            <p>Location: {event.location}</p>
-            <p>Price: {event.price}₪</p>
-            <div className="available-places-container">
-                <p className="available-places">Available Places: {event.available_places}</p>
-            </div>
-            <div className="reservation-container">
-                <label>
-                    Seats:
-                    <input
-                        type="number"
-                        value={seats}
-                        onChange={(e) => setSeats(e.target.value)}
-                        min="1"
-                        max={event.available_places}
-                    />
-                </label>
-                <button onClick={handleReservation}>Reserve</button>
-            </div>
-            
-            {/* הצגת התגובות */}
-            <div className="comments-section">
-                <h2>Comments</h2>
-                {comments.length > 0 ? (
-                    comments.map((comment) => (
-                        <div key={comment.id} className="comment">
-                            <p><strong>{comment.username}:</strong> {comment.content}</p>
-                            {comment.user === parseInt(userId) && (
-                                <button 
-                                    onClick={() => handleDeleteComment(comment.id)} 
-                                    className="delete-button"
-                                >
-                                    Delete
-                                </button>
-                            )}
-                        </div>
-                    ))
-                ) : (
-                    <p>No comments yet.</p>
-                )}
-            </div>
-
-            {/* הוספת תגובה - יוצג רק אם המשתמש מחובר ולא הוסיף תגובה */}
-            {userId && !comments.some(comment => comment.user === parseInt(userId)) && (
-                <div className="add-comment-section">
-                    <h2>Add a Comment</h2>
-                    <textarea
-                        value={commentText}
-                        onChange={(e) => setCommentText(e.target.value)}
-                        placeholder="Write your comment here"
-                    ></textarea>
-                    <button onClick={handleAddComment}>Add Comment</button>
-                </div>
-            )}
+            <EventHeader
+                name={event.name}
+                date={eventDateLocal}
+                description={event.description}
+            />
+            <EventInfo
+                location={event.location}
+                price={event.price}
+                availablePlaces={event.available_places}
+            />
+            <ReservationForm
+                availablePlaces={event.available_places}
+                onReserve={handleReservation}
+            />
+            <CommentsSection
+                comments={comments}
+                userId={userId}
+                onDelete={handleDeleteComment}
+            />
+            {userId &&
+                !comments.some(
+                    (comment) => comment.user === parseInt(userId)
+                ) && <AddCommentForm onAdd={handleAddComment} />}
         </div>
     );
 };
