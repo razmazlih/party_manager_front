@@ -9,7 +9,7 @@ const EventList = () => {
     const [filteredEvents, setFilteredEvents] = useState([]);
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
-    const [isLoading, setIsLoading] = useState(true); // מצב טעינה
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         fetchEvents().then((response) => {
@@ -19,7 +19,7 @@ const EventList = () => {
                 .sort((a, b) => new Date(a.date) - new Date(b.date));
             setEvents(futureEvents);
             setFilteredEvents(futureEvents);
-            setIsLoading(false); // סיום טעינה
+            setIsLoading(false);
         });
     }, []);
 
