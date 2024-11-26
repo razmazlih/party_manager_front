@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { fetchEvents } from '../services/api';
-import EventCard from './EventCard';
+import EventCard from './EventList/EventCard';
+import FilterEvents from './EventList/FilterEvents';
+import LoadingSpinner from './EventList/LoadingSpinner';
 import './styles.css';
 import './EventList.css';
 
@@ -15,7 +17,7 @@ const EventList = () => {
         fetchEvents().then((response) => {
             const currentDate = new Date();
             const futureEvents = response.data
-                .filter(event => new Date(event.date) > currentDate)
+                .filter((event) => new Date(event.date) > currentDate)
                 .sort((a, b) => new Date(a.date) - new Date(b.date));
             setEvents(futureEvents);
             setFilteredEvents(futureEvents);
@@ -24,7 +26,7 @@ const EventList = () => {
     }, []);
 
     const handleFilter = () => {
-        const filtered = events.filter(event => {
+        const filtered = events.filter((event) => {
             const eventDate = new Date(event.date);
             const start = startDate ? new Date(startDate) : null;
             const end = endDate ? new Date(endDate) : null;
@@ -42,46 +44,22 @@ const EventList = () => {
     return (
         <div className="event-list-container">
             <h1>Upcoming Events</h1>
-            <div className="filter-container">
-                <h2>Filter Events</h2>
-                <div className="filter-inputs">
-                    <div className="filter-field">
-                        <label htmlFor="start-date">Start Date:</label>
-                        <input
-                            id="start-date"
-                            type="date"
-                            value={startDate}
-                            onChange={(e) => setStartDate(e.target.value)}
-                        />
-                    </div>
-                    <div className="filter-field">
-                        <label htmlFor="end-date">End Date:</label>
-                        <input
-                            id="end-date"
-                            type="date"
-                            value={endDate}
-                            onChange={(e) => setEndDate(e.target.value)}
-                        />
-                    </div>
-                </div>
-                <div className="filter-buttons">
-                    <button className="filter-button" onClick={handleFilter}>Apply Filter</button>
-                    <button className="reset-button" onClick={handleReset}>Reset</button>
-                </div>
-            </div>
+            <FilterEvents
+                startDate={startDate}
+                endDate={endDate}
+                onStartDateChange={setStartDate}
+                onEndDateChange={setEndDate}
+                onApplyFilter={handleFilter}
+                onResetFilter={handleReset}
+            />
             {isLoading ? (
-                <div className="loading-container">
-                    <div className="loading-spinner"></div>
-                    <p>Loading events...</p>
-                </div>
+                <LoadingSpinner />
+            ) : filteredEvents.length === 0 ? (
+                <p>No events found for the selected date range.</p>
             ) : (
-                filteredEvents.length === 0 ? (
-                    <p>No events found for the selected date range.</p>
-                ) : (
-                    filteredEvents.map((event) => (
-                        <EventCard event={event} key={event.id} />
-                    ))
-                )
+                filteredEvents.map((event) => (
+                    <EventCard event={event} key={event.id} />
+                ))
             )}
         </div>
     );
